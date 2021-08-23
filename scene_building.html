@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- import aframe and then ar.js with image tracking / location based features -->
+    <!-- <script
+        src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>-->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script>
+        AFRAME.registerComponent('navigate-on-click', {
+            schema: {
+                url: { default: '' }
+            },
+            init: function () {
+                var data = this.data;
+                var el = this.el;
+                el.addEventListener('click', function () {
+                    window.open(data.url, '_blank');
+                });
+            }
+        });
+    </script>
+</head>
+
+<body style="background-color: #b4c9af">
+
+
+    <a-scene>
+        <a-assets>
+            <img id="business_card" src="./markers/student_card.jpg">
+            <video id="business_video" autoplay loop="true" src="assets/video/VideoSample_01.mp4"></video>
+            <img id="facebook_logo" src="./assets/logo/facebook.jpg">
+            <img id="github_logo" src="./assets/logo/github_logo.png">
+            <img id="linkedin_logo" src="./assets/logo/linkedin_logo.png">
+        </a-assets>
+        <a-image src="#business_card" width="9" height="5"></a-image>
+        <!-- Main Plane-->
+        <a-plane color="#ffffff" opacity="0.3" rotation="0 0 0" position="18 0 0" width="25" height="15">
+            <!-- Text Block -->
+            <a-plane color="#ffffff" opacity="0.3" position="0 4 0" width="23" height="5">
+                <a-text color="#000000" width="13" height="13"
+                    value="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+                    position="-11 1.5 0"></a-text>
+            </a-plane>
+            <!-- Video Block -->
+            <a-video src="#business_video" width="16" height="7" position="-2.5 -2.5 1"></a-video>
+            <!-- Social Media Block -->
+            <a-plane scale="1.2 1.2 1" color="#ffffff" opacity="0.0" position="10.2 -3 1" width="2" height="6">
+                <a-box src="#facebook_logo" position="0 2 0" depth="1" height="1" width="1" src="#facebook_logo"
+                    width="1" height="1" position="0 2 5"
+                    navigate-on-click="url: https://www.facebook.com/kaixian9811/">
+                    <a-animation attribute="rotation" dur="7000" to="0 360 0" easing="linear" repeat="indefinite">
+                    </a-animation>
+                </a-box>
+                <a-image src="#github_logo" width="1" height="1" position="0 0 0"
+                    navigate-on-click="url: https://github.com/KaiXian-1126"></a-image>
+                <a-image src="#linkedin_logo" width="1" height="1" position="0 -2 0"
+                    navigate-on-click="url: https://www.linkedin.com/in/tok-kai-xian/"></a-image>
+            </a-plane>
+            <a-box src="#github_logo" position="-0.4 0 0" depth="0.15" height="0.15" width="0.15"
+                navigate-on-click="url: http://github.com/UtkarshGpta">
+                <a-animation attribute="rotation" dur="7000" to="0 360 0" easing="linear" repeat="indefinite">
+                </a-animation>
+            </a-box>
+            <a-box src="#linkedin_logo" position="0.4 0 0" depth="0.15" height="0.15" width="0.15"
+                navigate-on-click="url: https://www.linkedin.com/in/utkarshgpta/">
+                <a-animation attribute="rotation" dur="7000" to="0 360 0" easing="linear" repeat="indefinite">
+                </a-animation>
+            </a-box>
+            <a-box src="#facebook_logo"
+                animation="property: rotation; to: 0 360 0; dur: 7000; easing: linear; loop: true" depth="1" height="1"
+                width="1" src="#facebook_logo" width="1" height="1" position="0 2 2"
+                navigate-on-click="url: https://www.facebook.com/kaixian9811/">
+            </a-box>
+        </a-plane>
+        <a-entity id="camera" cursor="rayOrigin: mouse"></a-entity>
+        <a-entity>
+            <a-camera position="0 0 17">
+            </a-camera>
+        </a-entity>
+
+    </a-scene>
+</body>

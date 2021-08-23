@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- import aframe and then ar.js with image tracking / location based features -->
+    <script
+        src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script>
+        AFRAME.registerComponent('raycaster-listen', {
+            schema: { url: { default: '' }, onRespondEnabled: { default: true }, respondInterval: { default: 0 } },
+            init: function () {
+                // Use events to figure out what raycaster is listening so we don't have to
+                // hardcode the raycaster.
+
+                this.el.addEventListener('raycaster-intersected', evt => {
+                    this.raycaster = evt.detail.el;
+                    if (this.data.onRespondEnabled) {
+                        this.data.onRespondEnabled = false;
+                        this.data.respondInterval = 3000;
+                        window.open(this.data.url, '_blank');
+                    }
+                });
+                this.el.addEventListener('raycaster-intersected-cleared', evt => {
+                    this.raycaster = null;
+                });
+            },
+            tick: function (time, timeDelta) {
+                if (this.data.respondInterval > 0) {
+                    this.data.respondInterval -= timeDelta;
+                    console.log("res interval: " + this.data.respondInterval);
+                } else {
+                    this.data.onRespondEnabled = true;
+                }
+                if (!this.raycaster) { // Not intersecting.
+                    return;
+                }
+                let intersection = this.raycaster.components.raycaster.getIntersection(this.el);
+                if (!intersection) {
+                    return;
+                }
+            },
+        });
+
+    </script>
+    <!-- style for the loader -->
+    <style>
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.25em;
+            color: white;
+        }
+    </style>
+</head>
+
+<body style="margin : 0px; overflow: hidden;">
+    <!-- minimal loader shown until image descriptors are loaded. Loading may take a while according to the device computational power -->
+    <div class="arjs-loader">
+        <div>Loading, please wait...</div>
+    </div>
+
+    <!-- a-frame scene -->
+    <a-scene cursor="rayOrigin: mouse" vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true;" embedded
+        arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;">
+        <!-- a-nft is the anchor that defines an Image Tracking entity -->
+        <!-- on 'url' use the path to the Image Descriptors created before. -->
+        <!-- the path should end with the name without the extension e.g. if file is 'pinball.fset' the path should end with 'pinball' -->
+        <a-assets>
+            <img id="business_card" src="./markers/student_card.jpg">
+            <video id="business_video" autoplay loop="true" src="assets/video/VideoSample_01.mp4"></video>
+            <img id="facebook_logo" src="./assets/logo/facebook.jpg">
+            <img id="github_logo" src="./assets/logo/github_logo.png">
+            <img id="linkedin_logo" src="./assets/logo/linkedin_logo.png">
+        </a-assets>
+        <a-nft type="nft" url="NFT/student_card_1200" smooth="true" smoothCount="10" smoothTolerance=".01"
+            smoothThreshold="5">
+            <!-- <a-plane navigate-on-click="url: https://github.com/KaiXian-1126" color="#ffffff" scale="5 5 1"
+                rotation="-90 0 0" opacity="0.3" position="-50 -1 0" width="2" height="2">
+            </a-plane>-->
+            <!-- Template 1 -->
+            <a-plane color="#ffffff" scale="2 2 1" rotation="-90 0 0" opacity="0.5" position="0 -1 0" width="25"
+                height="15">
+                <!-- Text Block -->
+                <a-plane color="#ffffff" opacity="0.3" position="0 4 0" width="23" height="5">
+                    <a-text color="#000000" width="13" height="13"
+                        value="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+                        position="-11 1.5 0"></a-text>
+                </a-plane>
+                <!-- Video Block -->
+                <a-video src="#business_video" width="16" height="7" position="-2.5 -2.5 1"></a-video>
+                <!-- Social Media Block -->
+                <a-plane scale="1.2 1.2 1" color="#ffffff" opacity="0.0" position="10.2 -3 1" width="2" height="6">
+                    <a-box src="#facebook_logo" raycaster="objects: [data-raycastable]"
+                        animation="property: rotation; to: 0 360 0; dur: 7000; easing: linear; loop: true"
+                        scale="1.8 1.8 1.8" position="0 2 1" depth="1" height="1" width="1" src="#facebook_logo"
+                        width="1" height="1" raycaster-listen="url: https://www.facebook.com/kaixian9811/">
+                    </a-box>
+                    <a-box src="#github_logo" raycaster="objects: [data-raycastable]"
+                        animation="property: rotation; to: 0 360 0; dur: 7000; easing: linear; loop: true"
+                        scale="1.8 1.8 1.8" position="0 0 1" depth="1" height="1" width="1" width="1" height="1"
+                        raycaster-listen="url: https://github.com/KaiXian-1126">
+                    </a-box>
+                    <a-box src="#linkedin_logo" raycaster="objects: [data-raycastable]"
+                        animation="property: rotation; to: 0 360 0; dur: 7000; easing: linear; loop: true"
+                        scale="1.8 1.8 1.8" position="0 -2 1" depth="1" height="1" width="1" width="1" height="1"
+                        raycaster-listen="url: https://www.linkedin.com/in/tok-kai-xian/">
+                    </a-box>
+                    <!-- <a-image src="#facebook_logo" width="1" height="1" position="0 2 1"
+                        navigate-on-click="url: https://www.facebook.com/kaixian9811/"></a-image>
+                    <a-image src="#github_logo" width="1" height="1" position="0 0 1"
+                        navigate-on-click="url: https://github.com/KaiXian-1126"></a-image>
+                    <a-image src="#linkedin_logo" width="1" height="1" position="0 -2 1"
+                        navigate-on-click="url: https://www.linkedin.com/in/tok-kai-xian/"></a-image> -->
+                </a-plane>
+
+            </a-plane>
+        </a-nft>
+        <!-- static camera that moves according to the device movemenents -->
+        <a-entity>
+            <a-camera>
+                <a-cursor id="cursor" raycaster scale="0.4 0.4 0.4"></a-cursor>
+            </a-camera>
+        </a-entity>
+    </a-scene>
+</body>
+
+</html>
